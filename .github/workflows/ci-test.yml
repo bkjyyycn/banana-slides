@@ -219,8 +219,16 @@ jobs:
           echo "Checking frontend..."
           for i in {1..30}; do
             if curl -f http://localhost:3000; then
-              echo "Frontend started successfully"
-              break
+              echo "Frontend HTTP response OK"
+              # 额外等待确保 JS 和 React 完全加载
+              sleep 5
+              # 验证前端包含关键内容
+              if curl -s http://localhost:3000 | grep -q "蕉幻"; then
+                echo "Frontend started successfully and content loaded"
+                break
+              else
+                echo "Frontend responding but content not ready yet..."
+              fi
             fi
             echo "Waiting for frontend... ($i/30)"
             sleep 2
@@ -298,11 +306,6 @@ jobs:
           docker compose down -v
           docker system prune -f
 
-  # ================================
-  # E2E Tests (已合并到docker-test中，避免重复构建)
-  # ================================
-  # 注意：E2E测试现在在docker-test job中运行，复用已构建的Docker环境
-  # 这样可以避免重复构建，节省时间和资源
 
   # ================================
   # Security Scan

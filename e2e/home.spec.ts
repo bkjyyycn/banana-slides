@@ -15,19 +15,29 @@ test.describe('首页', () => {
   test('应该显示创建项目的选项', async ({ page }) => {
     await page.goto('/')
     
+    // 等待页面主要内容加载
+    await page.waitForSelector('main', { timeout: 10000 })
+    
     // 检查是否有创建选项（根据实际UI调整选择器）
-    const createOptions = page.locator('text=/从想法创建|从大纲创建|从描述创建/i')
-    await expect(createOptions.first()).toBeVisible()
+    const createOptions = page.locator('text=/一句话生成|从大纲生成|从描述生成/i')
+    await expect(createOptions.first()).toBeVisible({ timeout: 15000 })
   })
 
   test('应该能够导航到创建页面', async ({ page }) => {
     await page.goto('/')
     
-    // 点击创建按钮
-    await page.click('text=/开始创建|创建项目|从想法创建/i')
+    // 等待页面加载
+    await page.waitForSelector('main')
+    
+    // 填写内容
+    const textarea = page.locator('textarea').first()
+    await textarea.fill('测试创建项目')
+    
+    // 点击下一步按钮
+    await page.click('button:has-text("下一步")')
     
     // 验证导航（根据实际路由调整）
-    await expect(page).toHaveURL(/\/create|\/new|\/outline/i)
+    await expect(page).toHaveURL(/\/project\/.*\/outline/i, { timeout: 15000 })
   })
 })
 
