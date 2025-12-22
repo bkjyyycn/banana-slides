@@ -232,7 +232,7 @@ class TestAPIFullFlow:
             timeout=30
         )
         
-        assert response.status_code == 200
+        assert response.status_code == 202  # 202 Accepted for async operations
         data = response.json()
         assert data['success'] is True
         
@@ -256,7 +256,7 @@ class TestAPIFullFlow:
             timeout=30
         )
         
-        assert response.status_code == 200
+        assert response.status_code == 202  # 202 Accepted for async operations
         data = response.json()
         assert data['success'] is True
         
