@@ -117,7 +117,11 @@ class GenAIImageProvider(ImageProvider):
             
             logger.debug("GenAI API call completed")
             
-            # Extract image from response
+            # Extract the final image from the response.
+            # Earlier images are usually low resolution drafts 
+            # Therefore, always use the last image found.
+            last_image = None
+            
             for i, part in enumerate(response.parts):
                 if part.text is not None:
                     logger.debug(f"Part {i}: TEXT - {part.text[:100] if len(part.text) > 100 else part.text}")
@@ -127,9 +131,13 @@ class GenAIImageProvider(ImageProvider):
                         image = part.as_image()
                         if image:
                             logger.debug(f"Successfully extracted image from part {i}")
-                            return image
+                            last_image = image
                     except Exception as e:
                         logger.debug(f"Part {i}: Failed to extract image - {str(e)}")
+            
+            # Return the last image found (highest quality in thinking chain scenarios)
+            if last_image:
+                return last_image
             
             # No image found in response
             error_msg = "No image found in API response. "
