@@ -121,7 +121,7 @@ def create_service_config(
     config = ServiceConfig.from_defaults(
         use_hybrid_extractor=use_hybrid_extractor,
         use_hybrid_inpaint=use_hybrid_inpaint,
-        max_depth=2  # 递归深度
+        max_depth=1  # 递归深度
     )
     
     # 如果指定了非 hybrid 的 inpaint 方法，需要手动配置
